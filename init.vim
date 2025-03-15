@@ -1,0 +1,1 @@
+/Users/jf/.config/nvim/init.vim
