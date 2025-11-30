@@ -13,19 +13,30 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
+Plug 'sindrets/diffview.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'stevearc/conform.nvim'
+
+Plug 'davidgranstrom/scnvim'
+
+Plug 'lervag/vimtex'
 call plug#end()
 
 colorscheme retrobox
 
 nnoremap <leader>f <cmd>GFiles<cr>
+nnoremap <leader>pf <cmd>Files<cr>
 nnoremap <leader>b <cmd>Buffers<cr>
-nnoremap <leader>s <cmd>RG<cr>
+nnoremap <leader>ss <cmd>RG<cr>
+nnoremap <leader>gs <cmd>GFiles!?<cr>
+
+
+nnoremap <leader>do <cmd>:DiffviewOpen<cr>
+nnoremap <leader>dp <cmd>:DiffviewClose<cr>
 
 
 set number
 set nohlsearch
-
 
 
 
@@ -118,6 +129,8 @@ lua <<EOF
 
 
   vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "grr", "<cmd>lua vim.lsp.buf.references()<CR>", { noremap = true, silent = true })
+  vim.api.nvim_set_keymap("n", "grn", "<cmd>lua vim.lsp.buf.rename()<CR>", { noremap = true, silent = true })
 
 
   -- Set up lspconfig.
@@ -126,5 +139,69 @@ lua <<EOF
   require('lspconfig')['rust_analyzer'].setup {
     capabilities = capabilities,
   }
+  require('lspconfig')['hls'].setup {
+    capabilities = capabilities,
+  }
+  require('lspconfig')['pyright'].setup {
+    capabilities = capabilities,
+    settings = {
+	    python = {
+		    analysis = {
+			    typeCheckingMode = "off"
+		    }
+		    }
+	    }
+  }
+  require('lspconfig').ruff.setup({ })
+EOF
+
+
+" CMP 
+lua <<EOF
+local scnvim = require 'scnvim'
+local map = scnvim.map
+local map_expr = scnvim.map_expr
+
+scnvim.setup({
+  keymaps = {
+    ['<leader>al'] = map('editor.send_line', {'i', 'n'}),
+    ['<leader>ab'] = {
+      map('editor.send_block', {'i', 'n'}),
+      map('editor.send_selection', 'x'),
+    },
+    ['<CR>'] = map('postwin.toggle'),
+    ['<M-CR>'] = map('postwin.toggle', 'i'),
+    ['<M-L>'] = map('postwin.clear', {'n', 'i'}),
+    ['<C-k>'] = map('signature.show', {'n', 'i'}),
+    ['<leader>ai'] = map('sclang.hard_stop', {'n', 'x', 'i'}),
+    ['<leader>st'] = map('sclang.start'),
+    ['<leader>sk'] = map('sclang.recompile'),
+    ['<F1>'] = map_expr('s.boot'),
+    ['<F2>'] = map_expr('s.meter'),
+  },
+  editor = {
+    highlight = {
+      color = 'IncSearch',
+    },
+  },
+  postwin = {
+    float = {
+      enabled = true,
+    },
+  },
+})
+
+EOF
+
+
+" conform
+lua <<EOF
+require("conform").setup({
+  format_on_save = {
+    -- These options will be passed to conform.format()
+    timeout_ms = 500,
+    lsp_format = "fallback",
+  }
+})
 EOF
 
