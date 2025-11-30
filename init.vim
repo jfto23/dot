@@ -236,3 +236,11 @@ require("conform").setup({
 })
 EOF
 
+
+lua <<EOF
+require 'nvim-treesitter.configs'.setup {
+    highlight = {
+        enable = true, -- enable syntax highlighting
+    }
+}
+EOF
