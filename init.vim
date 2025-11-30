@@ -6,10 +6,6 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 
-" For vsnip users.
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/vim-vsnip'
-
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
@@ -93,17 +89,7 @@ lua <<EOF
     snippet = {
       -- REQUIRED - you must specify a snippet engine
       expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-        -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
-
-        -- For `mini.snippets` users:
-        -- local insert = MiniSnippets.config.expand.insert or MiniSnippets.default_insert
-        -- insert({ body = args.body }) -- Insert at cursor
-        -- cmp.resubscribe({ "TextChangedI", "TextChangedP" })
-        -- require("cmp.config").set_onetime({ sources = {} })
+        vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
       end,
     },
     --window = {
@@ -119,10 +105,6 @@ lua <<EOF
     }),
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
-      { name = 'vsnip' }, -- For vsnip users.
-      -- { name = 'luasnip' }, -- For luasnip users.
-      -- { name = 'ultisnips' }, -- For ultisnips users.
-      -- { name = 'snippy' }, -- For snippy users.
     }, {
       { name = 'buffer' },
     })
@@ -166,24 +148,47 @@ lua <<EOF
 
   -- Set up lspconfig.
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
-  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  require('lspconfig')['rust_analyzer'].setup {
+  vim.lsp.config['rust_analyzer'] = {
     capabilities = capabilities,
   }
-  require('lspconfig')['hls'].setup {
+  vim.lsp.enable('rust_analyzer')
+
+  vim.lsp.enable('hls')
+
+  vim.lsp.config['pyright'] = {
     capabilities = capabilities,
-  }
-  require('lspconfig')['pyright'].setup {
-    capabilities = capabilities,
+  -- Command and arguments to start the server.
+  -- cmd = { 'lua-language-server' },
+  -- Filetypes to automatically attach to.
+  -- filetypes = { 'py' },
+  -- Sets the "workspace" to the directory where any of these files is found.
+  -- Files that share a root directory will reuse the LSP server connection.
+  -- Nested lists indicate equal priority, see |vim.lsp.Config|.
+  -- root_markers = { { '.luarc.json', '.luarc.jsonc' }, '.git' },
+  -- Specific settings to send to the server. The schema is server-defined.
+  -- Example: https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json
     settings = {
-	    python = {
-		    analysis = {
-			    typeCheckingMode = "off"
-		    }
-		    }
-	    }
+      python = {
+        analysis = {
+	  ignore = { '*' },
+        }
+      }
+    }
   }
-  require('lspconfig').ruff.setup({ })
+
+  vim.lsp.enable('pyright')
+  vim.lsp.enable('ruff')
+
+
+  vim.lsp.config['ts_ls'] = {
+    capabilities = capabilities
+  }
+  vim.lsp.enable('ts_ls')
+
+  vim.lsp.config['angularls'] = {
+    capabilities = capabilities
+  }
+  vim.lsp.enable('angularls')
 EOF
 
 
