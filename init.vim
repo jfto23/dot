@@ -34,6 +34,11 @@ nnoremap <leader>gs <cmd>GFiles!?<cr>
 nnoremap <leader>do <cmd>:DiffviewOpen<cr>
 nnoremap <leader>dp <cmd>:DiffviewClose<cr>
 
+nnoremap <leader>cn <cmd>:cn<cr>
+nnoremap <leader>cp <cmd>:cp<cr>
+nnoremap <leader>cl <cmd>:ccl<cr>
+
+
 
 set number
 set nohlsearch
