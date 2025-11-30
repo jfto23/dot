@@ -19,10 +19,11 @@ Plug 'stevearc/conform.nvim'
 
 Plug 'davidgranstrom/scnvim'
 
+Plug 'ellisonleao/gruvbox.nvim'
 Plug 'lervag/vimtex'
 call plug#end()
 
-colorscheme retrobox
+set background=dark
 
 nnoremap <leader>f <cmd>GFiles<cr>
 nnoremap <leader>pf <cmd>Files<cr>
@@ -39,11 +40,36 @@ nnoremap <leader>cp <cmd>:cp<cr>
 nnoremap <leader>cl <cmd>:ccl<cr>
 
 
-
 set number
 set nohlsearch
 
+lua <<EOF
+require("gruvbox").setup({
+  terminal_colors = true, -- add neovim terminal colors
+  undercurl = true,
+  underline = true,
+  bold = true,
+  italic = {
+    strings = true,
+    emphasis = true,
+    comments = true,
+    operators = false,
+    folds = true,
+  },
+  strikethrough = true,
+  invert_selection = false,
+  invert_signs = false,
+  invert_tabline = false,
+  inverse = false, -- invert background for search, diffs, statuslines and errors
+  contrast = "hard", -- can be "hard", "soft" or empty string
+  palette_overrides = {},
+  overrides = {},
+  dim_inactive = false,
+  transparent_mode = false,
+})
+vim.cmd("colorscheme gruvbox")
 
+EOF
 
 
 " CMP 
@@ -80,10 +106,10 @@ lua <<EOF
         -- require("cmp.config").set_onetime({ sources = {} })
       end,
     },
-    window = {
-      completion = cmp.config.window.bordered(),
-      documentation = cmp.config.window.bordered(),
-    },
+    --window = {
+    --  completion = cmp.config.window.bordered(),
+    --  documentation = cmp.config.window.bordered(),
+    --},
     mapping = cmp.mapping.preset.insert({
       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
